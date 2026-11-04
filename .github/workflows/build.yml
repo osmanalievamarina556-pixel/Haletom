@@ -1,0 +1,29 @@
+name: build-cf-esp
+
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-22.04
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install deps
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y libsdl2-dev libgl-dev git g++
+
+      - name: Build
+        run: |
+          chmod +x build_cf_esp.sh
+          ./build_cf_esp.sh cf_esp
+
+      - name: Upload binary
+        uses: actions/upload-artifact@v4
+        with:
+          name: cf_esp-linux-x86_64
+          path: cf_esp/cf_esp
+          if-no-files-found: error
